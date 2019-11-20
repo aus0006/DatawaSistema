@@ -40,6 +40,8 @@ def leerExcel(self,name):
         ini=0
         fin=contenido.find('<')-1
         var=''
+        var1=''
+        var2=''
         for char in contenido:
             if ini > fin:
                 break
@@ -47,7 +49,18 @@ def leerExcel(self,name):
                 var+=char
             ini+=1
         if paso==0:
-            grado=var
+            codigo=False
+            for c in var:
+                if codigo:
+                    var2+=c
+                else:
+                    if c=='-':
+                        codigo=True
+                    else:
+                        var1+=c
+            cg=var1
+            grado=var2
+            grado=grado[1:]
         elif paso ==1:
             curso=var
         else:
@@ -55,10 +68,11 @@ def leerExcel(self,name):
 
         paso+=1
     paso=0
+    
     #Creo cabecera y la escribo en el csv
     cabecera=['CA','Asignatura','Curso','TpVp','HDocAsig','HDocTipgr',
          'TipDoc','Grupo','Cprof','Profesor','HProfGrup','Igrup',
-         'Iprof','Actas','CDS','Docencia','Resp','Macrogrupo','OfertaConjunta','Grado','Año','Fecha']
+         'Iprof','Actas','CDS','Docencia','Resp','Macrogrupo','OfertaConjunta','CG','Grado','Anno','Fecha']
     csvWritter.writerow(cabecera)
     #preparo tabla
     contenido=contenido[contenido.find('C.A'):]
@@ -96,6 +110,7 @@ def leerExcel(self,name):
             linea=linea[linea.find('</Cell>'):]
             linea=linea[linea.find('<Cell'):]
         if linea_Valores:
+            linea_Valores.append(cg)
             linea_Valores.append(grado)
             linea_Valores.append(curso)
             linea_Valores.append(fechaExe)
@@ -128,9 +143,10 @@ def formateoDatos(self):
     x['Docencia'] = x['Docencia'].astype(np.str) 
     x['Resp'] = x['Resp'].astype(np.str) 
     x['Macrogrupo'] = x['Macrogrupo'].astype(np.float) 
-    x['OfertaConjunta'] = x['OfertaConjunta'].astype(np.float) 
+    x['OfertaConjunta'] = x['OfertaConjunta'].astype(np.float)
+    x['CG'] = x['CG'].astype(np.int) 
     x['Grado'] = x['Grado'].astype(np.str) 
-    x['Año'] = x['Año'].astype(np.str) 
+    x['Anno'] = x['Anno'].astype(np.str) 
     x['Fecha'] = x['Fecha'].astype(np.str)
     
     return x

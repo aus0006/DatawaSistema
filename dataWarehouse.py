@@ -331,11 +331,60 @@ class dataWarehouse:
                #tablahtml=tabla.to_html()
                #GUARDAR DATOS EN BD
                conn=f.conexionDB(self)
+               #CREAR DATAFRAMES POR TABLA PARA SUBIR
+               dfgrado=tabla[['CG','Grado']]
+               dfgrado=dfgrado.drop_duplicates(subset='CG')
+               
+               dfasignaturas=tabla[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+               dfasignaturas= dfasignaturas.drop_duplicates(subset='CA')
+               
+               dfgrupo=tabla[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipgr', 'TipDoc','CA']]
+               dfgrupo=dfgrupo.drop_duplicates(subset=['Grupo','CA'])
+               
+               dflistado=tabla[['Anno','Fecha', 'CG']]
+               dflistado=dflistado.drop_duplicates(subset='Anno')
+               
+               dfprofesor=tabla[['Cprof','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+               dfprofesor=dfprofesor.drop_duplicates(subset='Cprof')
+               
+               dfhoras=tabla[['CG','Grupo','Cprof','CA','Anno','HProfGrup']]
+               dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','Cprof','CA','Anno'])
+               
                try:
-                   tabla.to_sql(con=conn, name='horas', if_exists='append',index=False)
+                   dfgrado.to_sql(con=conn, name='grados', if_exists='append',index=False)
                except:
                    output+='''
-                       <p>ERROR: Los datos no se han introducido.</p>
+                       <p>ERROR: El grado no se ha introducido.</p>
+                   '''               
+               try:
+                   dfasignaturas.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
+               except:
+                   output+='''
+                       <p>ERROR: las asignaturas no se han introducido.</p>
+                   '''               
+               try:
+                   dflistado.to_sql(con=conn, name='listados', if_exists='append',index=False)
+               except:
+                   output+='''
+                       <p>ERROR: Los listados no se han introducido.</p>
+                   '''               
+               try:
+                   dfgrupo.to_sql(con=conn, name='grupos', if_exists='append',index=False)
+               except:
+                   output+='''
+                       <p>ERROR: Los grupos no se han introducido.</p>
+                   '''               
+               try:
+                   dfprofesor.to_sql(con=conn, name='profesores', if_exists='append',index=False)
+               except:
+                   output+='''
+                       <p>ERROR: Los profesores no se han introducido.</p>
+                   '''                 
+               try:
+                   dfhoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
+               except:
+                   output+='''
+                       <p>ERROR: Las horas no se han introducido.</p>
                    '''               
                #BORRAR ARCHIVO TEMPORAL
                if os.path.isfile("tmp/out.csv"):
@@ -465,8 +514,8 @@ class dataWarehouse:
                conn=f.conexionDB(self)
                #comprobar que datos ya hay
                s = text(
-                       "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Año = :a")
-               rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Año'][0])).fetchall()
+                       "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Anno = :a")
+               rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Anno'][0])).fetchall()
                if rs:
                    datos=True
                    fechaBD=rs[0][0]
@@ -614,8 +663,8 @@ class dataWarehouse:
        conn=f.conexionDB(self)
        #comprobar que datos ya hay
        s = text(
-               "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Año = :a")
-       rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Año'][0])).fetchall()
+               "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Anno = :a")
+       rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Anno'][0])).fetchall()
        fechaBD=rs[0][0]
        #Borramos datos
        s = text(
@@ -724,16 +773,15 @@ class dataWarehouse:
          <body>
          <div id='Cabecera' align=center>
          <h1>TABLA</h1>
-             %i
-             <div id='GBotones' align=right>
+         '''  + tablahtml + '''
+              <div id='GBotones' align=right>
              <a href="entradaDatos" class="boton" id="b1">Introducir mas datos</a>
              <a href="index" class="boton" id="b4">Volver</a>
              </div>
          </div>
          </body>
          </html>
-       ''' % tablahtml
-       
+       ''' 
        return output
        
       
