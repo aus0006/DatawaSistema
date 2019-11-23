@@ -70,9 +70,9 @@ def leerExcel(self,name):
     paso=0
     
     #Creo cabecera y la escribo en el csv
-    cabecera=['CA','Asignatura','Curso','TpVp','HDocAsig','HDocTipgr',
-         'TipDoc','Grupo','Cprof','Profesor','HProfGrup','Igrup',
-         'Iprof','Actas','CDS','Docencia','Resp','Macrogrupo','OfertaConjunta','CG','Grado','Anno','Fecha']
+    cabecera=['CA','Asignatura','Curso','TpVp','HDocAsig','HDocTipGr',
+         'TipDoc','Grupo','CProf','Profesor','HProfGrup','Igrup',
+         'Iprof','Actas','CDS','Docencia','Resp','Macrogrupo','OfertaConjunta','CG','Grado', 'Anno','Fecha']
     csvWritter.writerow(cabecera)
     #preparo tabla
     contenido=contenido[contenido.find('C.A'):]
@@ -121,21 +121,21 @@ def leerExcel(self,name):
     xmlToCsv.close()
     return fechaExe
 
-def formateoDatos(self):
+def formateoDatos():
     x=pd.read_csv('tmp/out.csv')
-    x['Cprof'].fillna(0, inplace=True) 
+    x['CProf'].fillna(0, inplace=True) 
     x['Profesor'].fillna('Sin asignar', inplace=True) 
-    x['CA'] = x['CA'].astype(np.int)
+    x['CA'] = x['CA'].astype(np.int64)
     x['Asignatura'] = x['Asignatura'].astype(np.str) 
-    x['Curso'] = x['Curso'].astype(np.int) 
+    x['Curso'] = x['Curso'].astype(np.int64) 
     x['TpVp'] = x['TpVp'].astype(np.str) 
     x['HDocAsig'] = x['HDocAsig'].astype(np.float) 
-    x['HDocTipgr'] = x['HDocTipgr'].astype(np.float) 
-    x['TipDoc'] = x['TipDoc'].astype(np.int) 
-    x['Grupo'] = x['Grupo'].astype(np.int) 
-    x['Cprof'] = x['Cprof'].astype(np.int) 
+    x['HDocTipGr'] = x['HDocTipGr'].astype(np.float) 
+    x['TipDoc'] = x['TipDoc'].astype(np.int64) 
+    x['Grupo'] = x['Grupo'].astype(np.int64) 
+    x['CProf'] = x['CProf'].astype(np.int64) 
     x['Profesor'] = x['Profesor'].astype(np.str) 
-    x['HProfGrup'] = x['HProfGrup'].astype(np.float) 
+    x['HProfGrup'] = x['HProfGrup'].astype(np.float)
     x['Igrup'] = x['Igrup'].astype(np.str) 
     x['Iprof'] = x['Iprof'].astype(np.str) 
     x['Actas'] = x['Actas'].astype(np.str) 
@@ -143,13 +143,14 @@ def formateoDatos(self):
     x['Docencia'] = x['Docencia'].astype(np.str) 
     x['Resp'] = x['Resp'].astype(np.str) 
     x['Macrogrupo'] = x['Macrogrupo'].astype(np.float) 
-    x['OfertaConjunta'] = x['OfertaConjunta'].astype(np.float)
-    x['CG'] = x['CG'].astype(np.int) 
+    x['OfertaConjunta'] = x['OfertaConjunta'].astype(np.float) 
+    x['CG'] = x['CG'].astype(np.int64) 
     x['Grado'] = x['Grado'].astype(np.str) 
     x['Anno'] = x['Anno'].astype(np.str) 
     x['Fecha'] = x['Fecha'].astype(np.str)
-    
+    os.remove("tmp/out.csv")
     return x
+
 
 def conexionDB(self):
     database_username = 'root'
