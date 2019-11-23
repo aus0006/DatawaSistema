@@ -338,17 +338,17 @@ class dataWarehouse:
                dfasignaturas=tabla[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
                dfasignaturas= dfasignaturas.drop_duplicates(subset='CA')
                
-               dfgrupo=tabla[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipgr', 'TipDoc','CA']]
+               dfgrupo=tabla[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
                dfgrupo=dfgrupo.drop_duplicates(subset=['Grupo','CA'])
                
                dflistado=tabla[['Anno','Fecha', 'CG']]
                dflistado=dflistado.drop_duplicates(subset='Anno')
                
-               dfprofesor=tabla[['Cprof','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
-               dfprofesor=dfprofesor.drop_duplicates(subset='Cprof')
+               dfprofesor=tabla[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+               dfprofesor=dfprofesor.drop_duplicates(subset='CProf')
                
-               dfhoras=tabla[['CG','Grupo','Cprof','CA','Anno','HProfGrup']]
-               dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','Cprof','CA','Anno'])
+               dfhoras=tabla[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+               dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
                
                try:
                    dfgrado.to_sql(con=conn, name='grados', if_exists='append',index=False)
