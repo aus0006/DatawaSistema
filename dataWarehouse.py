@@ -8,6 +8,7 @@ import cherrypy
 import os
 import os.path
 import pandas as pd
+import numpy as np
 import func.functions as f
 import sqlalchemy
 from sqlalchemy.sql import text
@@ -341,11 +342,11 @@ class dataWarehouse:
                dfgrupo=tabla[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
                dfgrupo=dfgrupo.drop_duplicates(subset=['Grupo','CA'])
                
-               dflistado=tabla[['Anno','Fecha', 'CG']]
-               dflistado=dflistado.drop_duplicates(subset='Anno')
-               
                dfprofesor=tabla[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
                dfprofesor=dfprofesor.drop_duplicates(subset='CProf')
+               
+               dflistado=tabla[['Anno','Fecha', 'CG']]
+               dflistado=dflistado.drop_duplicates(subset='Anno')
                
                dfhoras=tabla[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
                dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
@@ -509,35 +510,29 @@ class dataWarehouse:
        if name:
            if os.path.exists(name):
                #LEER DATOS DE EXCEL
-               fechaExcel=f.leerExcel(self,name)
-               tabla=f.formateoDatos(self)
+               f.leerExcel(self,name)
+               tablaN=f.formateoDatos(self)
                conn=f.conexionDB(self)
-               #comprobar que datos ya hay
-               s = text(
-                       "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Anno = :a")
-               rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Anno'][0])).fetchall()
-               if rs:
-                   datos=True
-                   fechaBD=rs[0][0]
-                   if fechaBD<fechaExcel:
-                       output+='''
-                           <p>Los datos nuevos son mas recientes.</p>
-                           '''
-                   elif fechaBD>fechaExcel:
-                       output+='''
-                           <p>Los datos de la base de datos son mas recientes.</p>
-                           '''
-                   else:
-                       output+='''
-                           <p>Los datos son de la misma fecha.</p>
-                           '''
-               else:
+               cg=tablaN['CG'].drop_duplicates()
+               anno=tablaN['Anno'].drop_duplicates()
+               if cg.values.size ==1:
+                   cg=cg[0]
+               if anno.values.size ==1:
+                   anno=anno[0]
+               
+               #LEER DATOS BD
+               tablaO=pd.read_sql("select * from dataframeview where CG like  %(cg)s and Anno like  %(anno)s", 
+                               conn, params={"cg":np.int(cg), "anno":anno})
+               if tablaO.size == 0:
                    datos=False
                    output+='''
-                           <p>No hay datos para actualizar.</p>
+                           <p>No hay datos que actualizar.</p>
                            '''
-               #comprobar fechas
-
+               else:
+                   datos=True
+                   
+                   #es aqui donde se deberia mostrar las tablas con modificaciones
+               
                #salida
                output+='''
                         <p>¿Que desea hacer?</p>
@@ -555,8 +550,7 @@ class dataWarehouse:
               </body>
                 </html>
                '''
-               
-               
+                   
            else:
                 output+='''
                         <p>ERROR: El archivo no se encuentra en el mismo directorio.</p>
@@ -659,28 +653,86 @@ class dataWarehouse:
     '''
        #xml
        #LEER DATOS DE EXCEL
-       tabla=f.formateoDatos(self)
+       tablaN=f.formateoDatos(self)
        conn=f.conexionDB(self)
-       #comprobar que datos ya hay
-       s = text(
-               "SELECT Fecha FROM horas WHERE CA = :ca AND Grupo = :gr AND Cprof = :cp AND Grado = :g AND Anno = :a")
-       rs=conn.execute(s,ca=str(tabla['CA'][0]), gr=str(tabla['Grupo'][0]), cp=str(tabla['Cprof'][0]), g=str(tabla['Grado'][0]), a=str(tabla['Anno'][0])).fetchall()
-       fechaBD=rs[0][0]
-       #Borramos datos
-       s = text(
-               "DELETE FROM horas WHERE Fecha= :f")
-       try:
-           conn.execute(s,f=fechaBD).fetchall()
-       except:
-           sol=True
+       cg=tablaN['CG'].drop_duplicates()
+       anno=tablaN['Anno'].drop_duplicates()
+       if cg.values.size ==1:
+           cg=cg[0]
+       if anno.values.size ==1:
+           anno=anno[0]
+       #LEER DATOS DE BD
+       tablaO=pd.read_sql("select * from dataframeview where CG like  %(cg)s and Anno like  %(anno)s", 
+                               conn, params={"cg":np.int(cg), "anno":anno})
        
-       #GUARDAR DATOS EN BD
-       try:
-           tabla.to_sql(con=conn, name='horas', if_exists='append',index=False)
-       except:
-           output+='''
-               <p>ERROR: Los datos no se han introducido.</p>
-           '''               
+       #PREPARACION DE DATOS
+       #tabla Horas
+       dfxHoras=tablaO[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+       dfxHoras=dfxHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+       yHoras=tablaN[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+       yHoras=yHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+       
+       #tabla PROFESORES
+       dfxProf=tablaO[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+       dfxProf=dfxProf.drop_duplicates(subset='CProf')
+       yProf=tablaN[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+       yProf=yProf.drop_duplicates(subset='CProf')
+       
+       #tabla GRUPOS
+       dfxGrup=tablaO[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+       dfxGrup=dfxGrup.drop_duplicates(subset=['Grupo','CA'])
+       yGrup=tablaN[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+       yGrup=yGrup.drop_duplicates(subset=['Grupo','CA'])
+       
+       #tabla ASIGNATURAS
+       dfxAsig=tablaO[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+       dfxAsig=dfxAsig.drop_duplicates(subset='CA')
+       yAsig=tablaN[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+       yAsig=yAsig.drop_duplicates(subset='CA')
+       
+       #INSERCION Y COMPROBACION DE DATOS
+       dfxAsig=f.insercionComp(self,dfxAsig,yAsig,'asignaturas',conn)
+       dfxGrup=f.insercionComp(self,dfxGrup,yGrup,'grupos',conn)
+       dfxProf =f.insercionComp(self,dfxProf,yProf,'profesores',conn)
+       dfxHoras=f.insercionComp(self,dfxHoras,yHoras,'horasasignadas',conn)
+       
+       #BORRADO DE DATOS
+       #horas
+       for v in dfxHoras.values:
+           s = text("DELETE FROM horasasignadas WHERE CG= :cg AND Grupo = :g AND CProf = :cp AND CA = :ca AND Anno = :a")
+           try:
+               conn.execute(s, cg=v[0], g=v[1], cp=v[2], ca=v[3], a=v[4])
+           except:
+               output+='''
+               <p>ERROR: Los datos de horas no se han borrado.</p>
+               '''  
+       #profesores
+       for v in dfxProf.values:
+           s = text("DELETE FROM profesores WHERE CProf= :cp")
+           try:
+               conn.execute(s, cp=v[0])
+           except:
+               output+='''
+               <p>ERROR: Los datos de profesores no se han borrado.</p>
+               ''' 
+       #grupos
+       for v in dfxGrup.values:
+           s = text("DELETE FROM grupos WHERE Grupo = :g AND CA = :ca")
+           try:
+               conn.execute(s, g=v[0], ca=v[5])
+           except:
+               output+='''
+               <p>ERROR: Los datos de grupos no se han borrado.</p>
+               ''' 
+       #asignaturas
+       for v in dfxAsig.values:
+           s = text("DELETE FROM asignaturas WHERE CA = :ca")
+           try:
+               conn.execute(s, ca=v[0])
+           except:
+               output+='''
+               <p>ERROR: Los datos de asignaturas no se han borrado.</p>
+               '''        
        #BORRAR ARCHIVO TEMPORAL
        if os.path.isfile("tmp/out.csv"):
            os.remove("tmp/out.csv")
