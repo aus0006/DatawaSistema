@@ -121,7 +121,7 @@ def leerExcel(self,name):
     xmlToCsv.close()
     return fechaExe
 
-def formateoDatos():
+def formateoDatos(self):
     x=pd.read_csv('tmp/out.csv')
     x['CProf'].fillna(0, inplace=True) 
     x['Profesor'].fillna('Sin asignar', inplace=True) 
@@ -151,8 +151,24 @@ def formateoDatos():
     x['Grado'] = x['Grado'].astype(np.str) 
     x['Anno'] = x['Anno'].astype(np.str) 
     x['Fecha'] = x['Fecha'].astype(np.str)
-    os.remove("tmp/out.csv")
     return x
+
+def insercionComp(self,dfO,dfN,dbName,database_connection):
+    datosNuevos=[]
+    for filaN in dfN.values:
+        esta=False
+        for iO, filaO in zip(dfO.index.values, dfO.values):
+            if np.all(filaO==filaN):
+                esta=True
+                dfO=dfO.drop(iO)
+                break
+        if esta==False:
+            datosNuevos.append(filaN)
+    if len(datosNuevos) != 0:
+        df= pd.DataFrame(data=datosNuevos, columns=dfN.columns)
+        df.to_sql(con=database_connection, name=dbName, if_exists='append',index=False)
+    
+    return dfO
 
 
 def conexionDB(self):
