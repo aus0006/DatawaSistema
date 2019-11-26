@@ -541,7 +541,7 @@ class dataWarehouse:
                     '''
                if datos:
                    output+='''
-                        <a href="actualizarDatos2" class="boton" id="b1">Actualizar datos BD</a>
+                        <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos BD</a>
                         '''
                output+='''
                         <a href="index" class="boton" id="b4">Volver</a>
@@ -556,7 +556,7 @@ class dataWarehouse:
                         <p>ERROR: El archivo no se encuentra en el mismo directorio.</p>
                     </div>
                     <div id='GBotones' align=right>
-                        <a href="actualizarDatos" class="boton" id="b1">Introducir datos</a>
+                        <a href="actualizarDatos" class="boton" id="b2">Actualizar datos</a>
                         <a href="index" class="boton" id="b4">Volver</a>
                     </div>
               </div>
@@ -568,7 +568,7 @@ class dataWarehouse:
                        <p>ERROR: No has introducido ningun archivo.</p>
                     </div>
                     <div id='GBotones' align=right>
-                        <a href="actualizarDatos" class="boton" id="b1">Introducir datos</a>
+                        <a href="actualizarDatos" class="boton" id="b2">Actualizar datos</a>
                         <a href="index" class="boton" id="b4">Volver</a>
                     </div>
               </div>
