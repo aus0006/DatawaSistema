@@ -153,22 +153,22 @@ def formateoDatos(self):
     x['Fecha'] = x['Fecha'].astype(np.str)
     return x
 
-def insercionComp(self,dfO,dfN,dbName,database_connection):
+def comprobacion(dfx,dfy,dbName,database_connection):
     datosNuevos=[]
-    for filaN in dfN.values:
+    borrar=dfx
+    df= pd.DataFrame()
+    for filaY in dfy.values:
         esta=False
-        for iO, filaO in zip(dfO.index.values, dfO.values):
-            if np.all(filaO==filaN):
+        for iX, filaX in zip(dfx.index.values, dfx.values):
+            if np.all(filaX==filaY):
                 esta=True
-                dfO=dfO.drop(iO)
+                borrar=borrar.drop(iX)
                 break
         if esta==False:
-            datosNuevos.append(filaN)
+            datosNuevos.append(filaY)
     if len(datosNuevos) != 0:
-        df= pd.DataFrame(data=datosNuevos, columns=dfN.columns)
-        df.to_sql(con=database_connection, name=dbName, if_exists='append',index=False)
-    
-    return dfO
+        df= pd.DataFrame(data=datosNuevos, columns=dfy.columns)
+    return borrar,df
 
 
 def conexionDB(self):
