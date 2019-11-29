@@ -223,6 +223,9 @@ class dataWarehouse:
             color: #ffffff;
             background-color: #764E1B;
         } 
+        #b2{
+            background-color: #764E1B;
+        }
         #a1{
             background-color: #B99361;
         }
@@ -493,7 +496,10 @@ class dataWarehouse:
                 #b1{
                     color: #ffffff;
                     background-color: #8B3636;
-                } 
+                }
+                #b2{
+                    background-color: #764E1B;
+                }
                 #a1{
                     background-color: #EC9393;
                 }
@@ -638,7 +644,10 @@ class dataWarehouse:
                 #b1{
                     color: #ffffff;
                     background-color: #8B3636;
-                } 
+                }
+                #b2{
+                    background-color: #764E1B;
+                }
                 #a1{
                     background-color: #EC9393;
                 }
@@ -690,15 +699,22 @@ class dataWarehouse:
        yAsig=tablaN[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
        yAsig=yAsig.drop_duplicates(subset='CA')
        
-       #INSERCION Y COMPROBACION DE DATOS
-       dfxAsig=f.insercionComp(self,dfxAsig,yAsig,'asignaturas',conn)
-       dfxGrup=f.insercionComp(self,dfxGrup,yGrup,'grupos',conn)
-       dfxProf =f.insercionComp(self,dfxProf,yProf,'profesores',conn)
-       dfxHoras=f.insercionComp(self,dfxHoras,yHoras,'horasasignadas',conn)
+       #tabla LISTADOS
+       dfxListado=tablaO[['Anno','Fecha', 'CG']]
+       dfxListado=dfxListado.drop_duplicates(subset='Anno')
+       yListado=tablaN[['Anno','Fecha', 'CG']]
+       yListado=yListado.drop_duplicates(subset='Anno')
+       
+       #COMPROBACION DE DATOS
+       borrListado, newListado=f.comprobacion(dfxListado,yListado,'listados',conn)
+       borrAsig, newAsig=f.comprobacion(self,dfxAsig,yAsig,'asignaturas',conn)
+       borrGrup, newGrup=f.comprobacion(self,dfxGrup,yGrup,'grupos',conn)
+       borrProf, newProf =f.comprobacion(self,dfxProf,yProf,'profesores',conn)
+       borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras,'horasasignadas',conn)
        
        #BORRADO DE DATOS
        #horas
-       for v in dfxHoras.values:
+       for v in borrHoras.values:
            s = text("DELETE FROM horasasignadas WHERE CG= :cg AND Grupo = :g AND CProf = :cp AND CA = :ca AND Anno = :a")
            try:
                conn.execute(s, cg=v[0], g=v[1], cp=v[2], ca=v[3], a=v[4])
@@ -707,7 +723,7 @@ class dataWarehouse:
                <p>ERROR: Los datos de horas no se han borrado.</p>
                '''  
        #profesores
-       for v in dfxProf.values:
+       for v in borrProf.values:
            s = text("DELETE FROM profesores WHERE CProf= :cp")
            try:
                conn.execute(s, cp=v[0])
@@ -716,7 +732,7 @@ class dataWarehouse:
                <p>ERROR: Los datos de profesores no se han borrado.</p>
                ''' 
        #grupos
-       for v in dfxGrup.values:
+       for v in borrGrup.values:
            s = text("DELETE FROM grupos WHERE Grupo = :g AND CA = :ca")
            try:
                conn.execute(s, g=v[0], ca=v[5])
@@ -725,14 +741,55 @@ class dataWarehouse:
                <p>ERROR: Los datos de grupos no se han borrado.</p>
                ''' 
        #asignaturas
-       for v in dfxAsig.values:
+       for v in borrAsig.values:
            s = text("DELETE FROM asignaturas WHERE CA = :ca")
            try:
                conn.execute(s, ca=v[0])
            except:
                output+='''
                <p>ERROR: Los datos de asignaturas no se han borrado.</p>
-               '''        
+               '''
+       #listados
+       for v in borrListado.values:
+           s = text("DELETE FROM listados WHERE Anno = :a")
+           try:
+               conn.execute(s, a=v[0])
+           except:
+               output+='''
+               <p>ERROR: Los datos de listados no se han borrado.</p>
+               '''
+       #INSERCION DE DATOS
+       try:
+           newAsig.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
+       except:
+           output+='''
+                       <p>ERROR: Las nuevas asignaturas no se han introducido.</p>
+                   '''
+       try:
+           newGrup.to_sql(con=conn, name='grupos', if_exists='append',index=False)
+       except:
+           output+='''
+                       <p>ERROR: Los nuevos grupos no se han introducido.</p>
+                   '''
+       try:
+           newProf.to_sql(con=conn, name='profesores', if_exists='append',index=False)
+       except:
+           output+='''
+                       <p>ERROR: Los nuevos profesores no se han introducido.</p>
+                   '''
+       try:
+           newListado.to_sql(con=conn, name='listados', if_exists='append',index=False)
+       except:
+           output+='''
+                       <p>ERROR: Los nuevos listados no se han introducido.</p>
+                   '''
+       try:
+           newHoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
+       except:
+           output+='''
+                       <p>ERROR: Las nuevas horas no se han introducido.</p>
+                   '''
+        
        #BORRAR ARCHIVO TEMPORAL
        if os.path.isfile("tmp/out.csv"):
            os.remove("tmp/out.csv")
