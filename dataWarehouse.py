@@ -16,6 +16,8 @@ from sqlalchemy.sql import text
 
 class dataWarehouse:
    def index(self):
+       if os.path.isfile("tmp/out.csv"):
+           os.remove("tmp/out.csv")
        output='''
        <html>
         <head>
@@ -500,6 +502,9 @@ class dataWarehouse:
                 #b2{
                     background-color: #764E1B;
                 }
+                #b21{
+                    background-color: #76421B;
+                }
                 #a1{
                     background-color: #EC9393;
                 }
@@ -547,7 +552,8 @@ class dataWarehouse:
                     '''
                if datos:
                    output+='''
-                        <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos BD</a>
+                        <a href="mostrarDatosNuevos" class="boton" id="b2">Mostrar cambios</a>
+                        <a href="actualizarDatos2" class="boton" id="b21">Actualizar datos BD</a>
                         '''
                output+='''
                         <a href="index" class="boton" id="b4">Volver</a>
@@ -706,11 +712,11 @@ class dataWarehouse:
        yListado=yListado.drop_duplicates(subset='Anno')
        
        #COMPROBACION DE DATOS
-       borrListado, newListado=f.comprobacion(dfxListado,yListado,'listados',conn)
-       borrAsig, newAsig=f.comprobacion(self,dfxAsig,yAsig,'asignaturas',conn)
-       borrGrup, newGrup=f.comprobacion(self,dfxGrup,yGrup,'grupos',conn)
-       borrProf, newProf =f.comprobacion(self,dfxProf,yProf,'profesores',conn)
-       borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras,'horasasignadas',conn)
+       borrListado, newListado=f.comprobacion(self,dfxListado,yListado)
+       borrAsig, newAsig=f.comprobacion(self,dfxAsig,yAsig)
+       borrGrup, newGrup=f.comprobacion(self,dfxGrup,yGrup)
+       borrProf, newProf =f.comprobacion(self,dfxProf,yProf)
+       borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras)
        
        #BORRADO DE DATOS
        #horas
@@ -813,7 +819,267 @@ class dataWarehouse:
       
        return output
        
-   actualizarDatos2.exposed = True    
+   actualizarDatos2.exposed = True
+
+   def mostrarDatosNuevos(self):
+       #LEER DATOS DE EXCEL
+       tablaN=f.formateoDatos(self)
+       conn=f.conexionDB(self)
+       cg=tablaN['CG'].drop_duplicates()
+       anno=tablaN['Anno'].drop_duplicates()
+       if cg.values.size ==1:
+           cg=cg[0]
+       if anno.values.size ==1:
+           anno=anno[0]
+       #LEER DATOS DE BD
+       tablaO=pd.read_sql("select * from dataframeview where CG like  %(cg)s and Anno like  %(anno)s", 
+                               conn, params={"cg":np.int(cg), "anno":anno})
+       
+       #tabla Horas
+       dfxHoras=tablaO[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+       dfxHoras=dfxHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+       yHoras=tablaN[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+       yHoras=yHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+       
+       #tabla PROFESORES
+       dfxProf=tablaO[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+       dfxProf=dfxProf.drop_duplicates(subset='CProf')
+       yProf=tablaN[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+       yProf=yProf.drop_duplicates(subset='CProf')
+       
+       #tabla GRUPOS
+       dfxGrup=tablaO[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+       dfxGrup=dfxGrup.drop_duplicates(subset=['Grupo','CA'])
+       yGrup=tablaN[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+       yGrup=yGrup.drop_duplicates(subset=['Grupo','CA'])
+       
+       #tabla ASIGNATURAS
+       dfxAsig=tablaO[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+       dfxAsig=dfxAsig.drop_duplicates(subset='CA')
+       yAsig=tablaN[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+       yAsig=yAsig.drop_duplicates(subset='CA')
+       
+       #tabla LISTADOS
+       dfxListado=tablaO[['Anno','Fecha', 'CG']]
+       dfxListado=dfxListado.drop_duplicates(subset='Anno')
+       yListado=tablaN[['Anno','Fecha', 'CG']]
+       yListado=yListado.drop_duplicates(subset='Anno')
+       
+       #COMPROBACION DE DATOS
+       borrListado, newListado=f.comprobacion(self,dfxListado,yListado)
+       borrAsig, newAsig=f.comprobacion(self,dfxAsig,yAsig)
+       borrGrup, newGrup=f.comprobacion(self,dfxGrup,yGrup)
+       borrProf, newProf =f.comprobacion(self,dfxProf,yProf)
+       borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras)
+       
+       output='''
+       <html>
+        <head>
+         </head>
+         <style>
+         body {
+                 margin-top: 15%;
+                 margin-right: 5%;
+                 margin-bottom: 25%;
+                 margin-left: 5%;
+                 
+                     }
+        #Cabecera {
+                text-decoration: none;
+                padding: 15px 70px 50px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #000000;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+                 background-color:#D6D6D6;
+                }
+        #GBotones {
+            margin-top: 50px;
+            }
+         .boton{
+                 text-decoration: none;
+                 padding: 10px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #ffffff;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+        }   
+        .boton:hover{
+            opacity:0.8;
+        }
+        input[type=file],input[type=submit]{
+                text-decoration: none;
+                padding: 10px;
+                font-family:"Arial Narrow", sans-serif;
+                font-weight: 600;
+                font-size: 20px;
+                
+                border-radius: 10px;
+                border: 2px solid #000000;
+        }   
+        input[type=file],input[type=submit]:hover{
+            opacity:0.8;
+        }
+        #b1{
+            color: #ffffff;
+            background-color: #8B3636;
+        }
+        #b2{
+            background-color: #764E1B;
+        }
+        #a1{
+            background-color: #EC9393;
+        }
+        #b4{
+            background-color: #454260;
+        }
+         </style>
+         <body>
+         <div id='Cabecera' align=center>
+         <h1>TABLAS</h1>
+         '''
+       if newListado.size != 0:
+           output+='''
+               <h3>Listados</h3>
+               '''
+           output+=newListado.to_html()
+       if newAsig.size != 0:
+           output+='''
+               <h3>Asignaturas</h3>
+               '''
+           output+=newAsig.to_html()
+       if newGrup.size != 0:
+           output+='''
+               <h3>Grupos</h3>
+               '''
+           output+=newGrup.to_html()
+       if newProf.size != 0:
+           output+='''
+               <h3>Profesores</h3>
+               '''
+           output+=newProf.to_html()  
+       if newHoras.size != 0:
+           output+='''
+               <h3>Horas</h3>
+               '''
+           output+=newHoras.to_html()           
+       output+= '''
+              <div id='GBotones' align=right>
+             <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos</a>
+             <a href="index" class="boton" id="b4">Volver</a>
+             </div>
+         </div>
+         </body>
+         </html>
+       ''' 
+       return output
+       
+      
+   mostrarDatosNuevos.exposed = True 
+
+   def mostrarDatosNuevosv1(self):
+       #LEER DATOS DE EXCEL
+       tablaN=f.formateoDatos(self)
+       conn=f.conexionDB(self)
+       cg=tablaN['CG'].drop_duplicates()
+       anno=tablaN['Anno'].drop_duplicates()
+       if cg.values.size ==1:
+           cg=cg[0]
+       if anno.values.size ==1:
+           anno=anno[0]
+       #LEER DATOS DE BD
+       tablaO=pd.read_sql("select * from dataframeview where CG like  %(cg)s and Anno like  %(anno)s", 
+                               conn, params={"cg":np.int(cg), "anno":anno})
+       tablaOld,tablaNew=f.comprobacion(self,tablaO,tablaN)
+       
+       output='''
+       <html>
+        <head>
+         </head>
+         <style>
+         body {
+                 margin-top: 15%;
+                 margin-right: 5%;
+                 margin-bottom: 25%;
+                 margin-left: 5%;
+                 
+                     }
+        #Cabecera {
+                text-decoration: none;
+                padding: 15px 70px 50px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #000000;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+                 background-color:#D6D6D6;
+                }
+        #GBotones {
+            margin-top: 50px;
+            }
+         .boton{
+                 text-decoration: none;
+                 padding: 10px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #ffffff;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+        }   
+        .boton:hover{
+            opacity:0.8;
+        }
+        input[type=file],input[type=submit]{
+                text-decoration: none;
+                padding: 10px;
+                font-family:"Arial Narrow", sans-serif;
+                font-weight: 600;
+                font-size: 20px;
+                
+                border-radius: 10px;
+                border: 2px solid #000000;
+        }   
+        input[type=file],input[type=submit]:hover{
+            opacity:0.8;
+        }
+        #b1{
+            color: #ffffff;
+            background-color: #8B3636;
+        }
+        #b2{
+            background-color: #764E1B;
+        }
+        #a1{
+            background-color: #EC9393;
+        }
+        #b4{
+            background-color: #454260;
+        }
+         </style>
+         <body>
+         <div id='Cabecera' align=center>
+         <h1>TABLA</h1>
+         '''  
+       output+=tablaNew.to_html()
+       output+= '''
+              <div id='GBotones' align=right>
+             <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos</a>
+             <a href="index" class="boton" id="b4">Volver</a>
+             </div>
+         </div>
+         </body>
+         </html>
+       ''' 
+       return output
+       
+      
+   mostrarDatosNuevosv1.exposed = True   
    
    def mostrarTablaIntroducida(self,tablahtml):
        output='''
