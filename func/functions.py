@@ -153,7 +153,7 @@ def formateoDatos(self):
     x['Fecha'] = x['Fecha'].astype(np.str)
     return x
 
-def comprobacion(dfx,dfy,dbName,database_connection):
+def comprobacion(self,dfx,dfy):
     datosNuevos=[]
     borrar=dfx
     df= pd.DataFrame()
