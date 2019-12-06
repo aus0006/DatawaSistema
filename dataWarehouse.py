@@ -16,8 +16,6 @@ from sqlalchemy.sql import text
 
 class dataWarehouse:
    def index(self):
-       if os.path.isfile("tmp/out.csv"):
-           os.remove("tmp/out.csv")
        output='''
        <html>
         <head>
@@ -66,6 +64,9 @@ class dataWarehouse:
         #b3{
             background-color: #368B54;
         }
+        #b4{
+            background-color: #454260;
+        }
          </style>
          <body>
          <div id='Cabecera' align=center>
@@ -76,12 +77,84 @@ class dataWarehouse:
                  <a href="visualizarDatos" class="boton" id="b3">Visualizar datos</a>
             </div>
         </div>
+        <div id='GBotones' align=right>
+            <a href="borrarDatos" class="boton" id="b4">Borrar BD</a>
+        </div>
        </body>
         </html>
        '''
        return output
    index.exposed = True
    
+   def borrarDatos(self):
+       conn=f.conexionDB(self)
+       conn.execute("call generarTablas02()")
+       output='''
+       <html>
+        <head>
+         </head>
+         <style>
+         body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+        #Cabecera {
+                text-decoration: none;
+                padding: 15px 70px 50px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #000000;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+                 background-color:#D6D6D6;
+                }
+        #GBotones {
+            margin-top: 50px;
+            }
+         .boton{
+                 text-decoration: none;
+                 padding: 10px;
+                 font-family:"Arial Narrow", sans-serif;
+                 font-weight: 600;
+                 font-size: 20px;
+                 color: #ffffff;
+                 border-radius: 10px;
+                 border: 2px solid #000000;
+        }   
+        .boton:hover{
+            opacity:0.8;
+        }
+        #b1{
+            background-color: #8B3636;
+        } 
+        #b2{
+            background-color: #764E1B;
+        }
+        #b3{
+            background-color: #368B54;
+        }
+        #b4{
+            background-color: #454260;
+        }
+         </style>
+         <body>
+         <div id='Cabecera' align=center>
+         <h1>DATA WAREHOUSE</h1>
+             <div id='GBotones' align=center>
+                 <a href="index" class="boton" id="b4">Volver</a>
+            </div>
+        </div>
+       </body>
+        </html>
+       '''
+       return output
+       
+   borrarDatos.exposed = True
+       
    def entradaDatos(self):
        output='''
        <html>
@@ -356,39 +429,47 @@ class dataWarehouse:
                dfhoras=tabla[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
                dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
                
+               subida=True
+               
                try:
                    dfgrado.to_sql(con=conn, name='grados', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: El grado no se ha introducido.</p>
                    '''               
                try:
                    dfasignaturas.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: las asignaturas no se han introducido.</p>
                    '''               
                try:
                    dflistado.to_sql(con=conn, name='listados', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: Los listados no se han introducido.</p>
                    '''               
                try:
                    dfgrupo.to_sql(con=conn, name='grupos', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: Los grupos no se han introducido.</p>
                    '''               
                try:
                    dfprofesor.to_sql(con=conn, name='profesores', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: Los profesores no se han introducido.</p>
                    '''                 
                try:
                    dfhoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
                except:
+                   subida=False
                    output+='''
                        <p>ERROR: Las horas no se han introducido.</p>
                    '''               
@@ -396,8 +477,11 @@ class dataWarehouse:
                if os.path.isfile("tmp/out.csv"):
                    os.remove("tmp/out.csv")
                #salida
+               if subida:
+                   output+='''
+                       <p>Los datos se han leido correctamente.</p>
+                   '''
                output+='''
-                        <p>Los datos se han leido correctamente.</p>
                     </div>
                     <div id='GBotones' align=right>
                         <!--
@@ -879,9 +963,9 @@ class dataWarehouse:
          <style>
          body {
                  margin-top: 15%;
-                 margin-right: 5%;
+                 margin-right: 15%;
                  margin-bottom: 25%;
-                 margin-left: 5%;
+                 margin-left: 15%;
                  
                      }
         #Cabecera {
