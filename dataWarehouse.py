@@ -636,7 +636,7 @@ class dataWarehouse:
                     '''
                if datos:
                    output+='''
-                        <a href="mostrarDatosNuevos" class="boton" id="b2">Mostrar cambios</a>
+                        <a href="mostrarDatos" class="boton" id="b2">Mostrar cambios</a>
                         <a href="actualizarDatos2" class="boton" id="b21">Actualizar datos BD</a>
                         '''
                output+='''
@@ -905,7 +905,7 @@ class dataWarehouse:
        
    actualizarDatos2.exposed = True
 
-   def mostrarDatosNuevos(self):
+   def mostrarDatos(self):
        #LEER DATOS DE EXCEL
        tablaN=f.formateoDatos(self)
        conn=f.conexionDB(self)
@@ -963,9 +963,9 @@ class dataWarehouse:
          <style>
          body {
                  margin-top: 15%;
-                 margin-right: 15%;
+                 margin-right: 10%;
                  margin-bottom: 25%;
-                 margin-left: 15%;
+                 margin-left: 10%;
                  
                      }
         #Cabecera {
@@ -1008,6 +1008,19 @@ class dataWarehouse:
         input[type=file],input[type=submit]:hover{
             opacity:0.8;
         }
+        
+        td {
+                font-size: 15px;
+                line-height: 20px;
+                padding: 0 20px;
+                text-align: justify;
+                vertical-align: top;
+                width: 50%;
+        }
+
+        td.first {
+                border-right: 2px solid #000000;
+                }
         #b1{
             color: #ffffff;
             background-color: #8B3636;
@@ -1024,8 +1037,43 @@ class dataWarehouse:
          </style>
          <body>
          <div id='Cabecera' align=center>
-         <h1>TABLAS</h1>
+             <h1>TABLAS</h1>
+             <div>
+                 <table>
+                     <tr>
+                         <td class="first">
+                             <h2>Datos old</h2>
          '''
+       if borrListado.size != 0:
+           output+='''
+               <h3>Listados</h3>
+               '''
+           output+=borrListado.to_html()
+       if borrAsig.size != 0:
+           output+='''
+               <h3>Asignaturas</h3>
+               '''
+           output+=borrAsig.to_html()
+       if borrGrup.size != 0:
+           output+='''
+               <h3>Grupos</h3>
+               '''
+           output+=borrGrup.to_html()
+       if borrProf.size != 0:
+           output+='''
+               <h3>Profesores</h3>
+               '''
+           output+=borrProf.to_html()  
+       if borrHoras.size != 0:
+           output+='''
+               <h3>Horas</h3>
+               '''
+           output+=borrHoras.to_html()  
+       output+='''
+                 </td>
+                 <td class="second">
+                     <h2>Datos new</h2>
+         ''' 
        if newListado.size != 0:
            output+='''
                <h3>Listados</h3>
@@ -1052,9 +1100,13 @@ class dataWarehouse:
                '''
            output+=newHoras.to_html()           
        output+= '''
-              <div id='GBotones' align=right>
-             <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos</a>
-             <a href="index" class="boton" id="b4">Volver</a>
+                     </td>
+                    </tr>
+                </table>
+            </div>
+            <div id='GBotones' align=right>
+                 <a href="actualizarDatos2" class="boton" id="b2">Actualizar datos</a>
+                 <a href="index" class="boton" id="b4">Volver</a>
              </div>
          </div>
          </body>
@@ -1063,7 +1115,7 @@ class dataWarehouse:
        return output
        
       
-   mostrarDatosNuevos.exposed = True 
+   mostrarDatos.exposed = True 
 
    def mostrarDatosNuevosv1(self):
        #LEER DATOS DE EXCEL
