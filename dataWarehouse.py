@@ -67,6 +67,9 @@ class dataWarehouse:
         #b4{
             background-color: #454260;
         }
+        #b5{
+            background-color: #625C78;
+        }
          </style>
          <body>
          <div id='Cabecera' align=center>
@@ -78,6 +81,7 @@ class dataWarehouse:
             </div>
         </div>
         <div id='GBotones' align=right>
+            <a href="visualizarBD" class="boton" id="b5"> BD</a>
             <a href="borrarDatos" class="boton" id="b4">Borrar BD</a>
         </div>
        </body>
@@ -1217,92 +1221,940 @@ class dataWarehouse:
       
    mostrarDatosNuevosv1.exposed = True   
    
-   def mostrarTablaIntroducida(self,tablahtml):
+   def visualizarBD(self):
        output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
+               <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 5%;
+                 margin-bottom: 25%;
+                 margin-left: 5%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=file],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=file],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b1{
+                    color: #ffffff;
+                    background-color: #8B3636;
+                }
+                #b2{
+                    background-color: #764E1B;
+                }
+                #a1{
+                    background-color: #EC9393;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>DATOS</h1>
+             '''
+             
+       conn=f.conexionDB(self)
+       df=pd.read_sql("select * from dataframeview",conn)
+       df=df.to_html()
+       output+=df      
+             
+       output+='''
+               <div id='GBotones' align=right>
+                   <a href="index" class="boton" id="b4">Volver</a>
+               </div>
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+             
+             
+   visualizarBD.exposed = True
+
+   def visualizarDatos(self):
+       
+       
+       
+       
+       output='''
+               <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
                  margin-top: 15%;
                  margin-right: 25%;
                  margin-bottom: 25%;
                  margin-left: 25%;
                  
                      }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
                 }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        input[type=file],input[type=submit]{
-                text-decoration: none;
-                padding: 10px;
-                font-family:"Arial Narrow", sans-serif;
-                font-weight: 600;
-                font-size: 20px;
-                
-                border-radius: 10px;
-                border: 2px solid #000000;
-        }   
-        input[type=file],input[type=submit]:hover{
-            opacity:0.8;
-        }
-        #b1{
-            color: #ffffff;
-            background-color: #8B3636;
-        } 
-        #a1{
-            background-color: #EC9393;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
-         <body>
-         <div id='Cabecera' align=center>
-         <h1>TABLA</h1>
-         '''  + tablahtml + '''
-              <div id='GBotones' align=right>
-             <a href="entradaDatos" class="boton" id="b1">Introducir mas datos</a>
-             <a href="index" class="boton" id="b4">Volver</a>
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b5{
+                    color: #ffffff;
+                    background-color: #71A449;
+                }
+                #b6{
+                    background-color: #49A457;
+                }
+                #b7{
+                    background-color: #49A479;
+                }
+                #b8{
+                    background-color: #49A49A;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR DATOS</h1>
+                 <p>SELECCIONA UNA OPCIÓN:</p>
+                 <div id='GBotones' align=center>
+                 <a href="visualizarAsignaturasGrado" class="boton" id="b5">Asignaturas Grado</a>
+                 <a href="visualizarProfesoresAsignaturas" class="boton" id="b6">Profesores en Asignaturas</a>
+                 <a href="visualizarProfesoresGrupo" class="boton" id="b7">Profesores por grupo</a>
+                 <a href="visualizarHorasProfesor" class="boton" id="b8">Horas Profesor</a>
+                 </div>
+                 <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+              
              </div>
-         </div>
-         </body>
-         </html>
-       ''' 
+             </body>
+             </html>
+             
+             '''
        return output
-       
-      
-   mostrarTablaIntroducida.exposed = True
-
-
-   def visualizarDatos(self):
-       return "En proceso"
+             
+             
    visualizarDatos.exposed = True
+
+
+   def visualizarAsignaturasGrado(self):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b5{
+                    color: #ffffff;
+                    background-color: #71A449;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR ASIGNATURAS</h1>
+                 <p>SELECCIONA UN GRADO:</p>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       grados=pd.read_sql("select * from grados",conn)
+       for i in grados.values:
+           output+=str(i[0])
+           output+=''' - '''
+           output+=i[1]
+           output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=center>
+                 <form name="formulario" method="get" action="visualizarAsignaturasGrado1">
+                 <input type="text" name="name" id="a1">
+                 <input type="submit" id="b5" \>
+                 </form>
+            </div>
+            <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
        
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarAsignaturasGrado.exposed = True
+
+
+   def visualizarAsignaturasGrado1(self,name=None):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR ASIGNATURAS</h1>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       df=pd.read_sql("select * from asignaturasorden where CG like  %(cg)s", 
+                               conn, params={"cg":np.int(name)})
+       output+=df.to_html()
+       output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarAsignaturasGrado1.exposed = True
+   
+
+   def visualizarProfesoresAsignaturas(self):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b6{
+                    background-color: #49A457;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR PROFESORES POR ASIGNATURA</h1>
+                 <p>SELECCIONA UN GRADO:</p>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       grados=pd.read_sql("select * from grados",conn)
+       for i in grados.values:
+           output+=str(i[0])
+           output+=''' - '''
+           output+=i[1]
+           output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=center>
+                 <form name="formulario" method="get" action="visualizarProfesoresAsignaturas1">
+                 <input type="text" name="name" id="a1">
+                 <input type="submit" id="b6" \>
+                 </form>
+            </div>
+            <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarProfesoresAsignaturas.exposed = True
+
+
+   def visualizarProfesoresAsignaturas1(self,name=None):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR PROFESORES POR ASIGNATURA</h1>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       df=pd.read_sql("select * from profesoresasignaturas where CG like  %(cg)s", 
+                               conn, params={"cg":np.int(name)})
+       output+=df.to_html()
+       output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarProfesoresAsignaturas1.exposed = True   
+
+
+   def visualizarProfesoresGrupo(self):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b7{
+                    background-color: #49A479;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR PROFESORES POR GRUPO</h1>
+                 <p>SELECCIONA UN GRADO:</p>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       grados=pd.read_sql("select * from grados",conn)
+       for i in grados.values:
+           output+=str(i[0])
+           output+=''' - '''
+           output+=i[1]
+           output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=center>
+                 <form name="formulario" method="get" action="visualizarProfesoresGrupo1">
+                 <input type="text" name="name" id="a1">
+                 <input type="submit" id="b7" \>
+                 </form>
+            </div>
+            <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarProfesoresGrupo.exposed = True
+
+
+   def visualizarProfesoresGrupo1(self,name=None):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR PROFESORES POR GRUPO</h1>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       df=pd.read_sql("select * from profesoresasignaturasgrupos where CG like  %(cg)s", 
+                               conn, params={"cg":np.int(name)})
+       output+=df.to_html()
+       output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarProfesoresGrupo1.exposed = True   
+
+
+   def visualizarHorasProfesor(self):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #b8{
+                    background-color: #49A49A;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR HORAS PROFESOR</h1>
+                 <p>SELECCIONA UN GRADO:</p>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       grados=pd.read_sql("select * from grados",conn)
+       for i in grados.values:
+           output+=str(i[0])
+           output+=''' - '''
+           output+=i[1]
+           output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=center>
+                 <form name="formulario" method="get" action="visualizarHorasProfesor1">
+                 <input type="text" name="name" id="a1">
+                 <input type="submit" id="b8" \>
+                 </form>
+            </div>
+            <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarHorasProfesor.exposed = True
+
+
+   def visualizarHorasProfesor1(self,name=None):
+       output='''
+           <html>
+                <head>
+                 </head>
+                 <style>
+                 body {
+                 margin-top: 15%;
+                 margin-right: 25%;
+                 margin-bottom: 25%;
+                 margin-left: 25%;
+                 
+                     }
+                #Cabecera {
+                        text-decoration: none;
+                        padding: 15px 70px 50px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #000000;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                         background-color:#D6D6D6;
+                        }
+                #GBotones {
+                    margin-top: 50px;
+                    }
+                 .boton{
+                         text-decoration: none;
+                         padding: 10px;
+                         font-family:"Arial Narrow", sans-serif;
+                         font-weight: 600;
+                         font-size: 20px;
+                         color: #ffffff;
+                         border-radius: 10px;
+                         border: 2px solid #000000;
+                }   
+                .boton:hover{
+                    opacity:0.8;
+                }
+                input[type=text],input[type=submit]{
+                        text-decoration: none;
+                        padding: 10px;
+                        font-family:"Arial Narrow", sans-serif;
+                        font-weight: 600;
+                        font-size: 20px;
+                        
+                        border-radius: 10px;
+                        border: 2px solid #000000;
+                }   
+                input[type=text],input[type=submit]:hover{
+                    opacity:0.8;
+                }
+                #a1{
+                    background-color: #FFFFFF;
+                }
+                #b4{
+                    background-color: #454260;
+                }
+                 </style>
+                 <body>
+                 <div id='Cabecera' align=center>
+                 <h1>VISUALIZAR HORAS PROFESOR</h1>
+                 <p>
+             '''
+             
+       conn=f.conexionDB(self)
+       df=pd.read_sql("select * from horasprofesor where CG like  %(cg)s", 
+                               conn, params={"cg":np.int(name)})
+       output+=df.to_html()
+       output+='''</p>'''
+       output+='''
+       <div id='GBotones' align=right>
+                 <a href="index" class="boton" id="b4">Volver</a>
+                 </div>
+       '''
+       output+=''' 
+             </div>
+             </body>
+             </html>
+             
+             '''
+       return output
+   visualizarHorasProfesor1.exposed = True   
+       
+
    
 conf_path = os.path.dirname(os.path.abspath(__file__))
 conf_path = os.path.join(conf_path, "MyProj.conf")
