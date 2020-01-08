@@ -132,7 +132,7 @@ def formateoDatos(self):
     x['HDocAsig'] = x['HDocAsig'].astype(np.float) 
     x['HDocTipGr'] = x['HDocTipGr'].astype(np.float) 
     x['TipDoc'] = x['TipDoc'].astype(np.int64) 
-    x['Grupo'] = x['Grupo'].astype(np.int64) 
+    x['Grupo'] = x['Grupo'].astype(np.str) 
     x['CProf'] = x['CProf'].astype(np.int64) 
     x['Profesor'] = x['Profesor'].astype(np.str) 
     x['HProfGrup'] = x['HProfGrup'].fillna(0.0)
@@ -151,7 +151,6 @@ def formateoDatos(self):
     x['Grado'] = x['Grado'].astype(np.str) 
     x['Anno'] = x['Anno'].astype(np.str) 
     x['Fecha'] = x['Fecha'].astype(np.str)
-    os.remove("tmp/out.csv")
     return x
 
 def comprobacion(self,dfx,dfy):
