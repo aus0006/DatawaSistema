@@ -2136,7 +2136,7 @@ class dataWarehouse:
              '''
              
        conn=f.conexionDB(self)
-       df=pd.read_sql("select * from horasprofesor where CG like  %(cg)s", 
+       df=pd.read_sql("select * from horasprofesorv2 where CG like  %(cg)s", 
                                conn, params={"cg":np.int(name)})
        output+=df.to_html()
        output+='''</p>'''
