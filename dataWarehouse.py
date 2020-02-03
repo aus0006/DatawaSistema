@@ -16,61 +16,8 @@ from sqlalchemy.sql import text
 
 class dataWarehouse:
    def index(self):
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        #b1{
-            background-color: #8B3636;
-        } 
-        #b2{
-            background-color: #764E1B;
-        }
-        #b3{
-            background-color: #368B54;
-        }
-        #b4{
-            background-color: #454260;
-        }
-        #b5{
-            background-color: #625C78;
-        }
-         </style>
+       output=f.css(self)
+       output+='''
          <body>
          <div id='Cabecera' align=center>
          <h1>DATA WAREHOUSE</h1>
@@ -81,7 +28,7 @@ class dataWarehouse:
             </div>
         </div>
         <div id='GBotones' align=right>
-            <a href="visualizarBD" class="boton" id="b5"> BD</a>
+            <a href="visualizarBD" class="boton" id="b0"> BD</a>
             <a href="borrarDatos" class="boton" id="b4">Borrar BD</a>
         </div>
        </body>
@@ -93,58 +40,8 @@ class dataWarehouse:
    def borrarDatos(self):
        conn=f.conexionDB(self)
        conn.execute("call generarTablas02()")
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        #b1{
-            background-color: #8B3636;
-        } 
-        #b2{
-            background-color: #764E1B;
-        }
-        #b3{
-            background-color: #368B54;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
+       output=f.css(self)
+       output+='''
          <body>
          <div id='Cabecera' align=center>
          <h1>DATA WAREHOUSE</h1>
@@ -160,69 +57,8 @@ class dataWarehouse:
    borrarDatos.exposed = True
        
    def entradaDatos(self):
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        input[type=file],input[type=submit]{
-                text-decoration: none;
-                padding: 10px;
-                font-family:"Arial Narrow", sans-serif;
-                font-weight: 600;
-                font-size: 20px;
-                
-                border-radius: 10px;
-                border: 2px solid #000000;
-        }   
-        input[type=file],input[type=submit]:hover{
-            opacity:0.8;
-        }
-        #b1{
-            color: #ffffff;
-            background-color: #8B3636;
-        } 
-        #a1{
-            background-color: #EC9393;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
+       output=f.css(self)
+       output+='''
          <body>
          <div id='Cabecera' align=center>
          <h1>INTRODUCIR DATOS</h1>
@@ -246,79 +82,15 @@ class dataWarehouse:
    entradaDatos.exposed = True 
    
    def actualizarDatos(self):
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        input[type=file],input[type=submit]{
-                text-decoration: none;
-                padding: 10px;
-                font-family:"Arial Narrow", sans-serif;
-                font-weight: 600;
-                font-size: 20px;
-                
-                border-radius: 10px;
-                border: 2px solid #000000;
-        }   
-        input[type=file],input[type=submit]:hover{
-            opacity:0.8;
-        }
-        #b1{
-            color: #ffffff;
-            background-color: #764E1B;
-        } 
-        #b2{
-            background-color: #764E1B;
-        }
-        #a1{
-            background-color: #B99361;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
+       output=f.css(self)
+       output+='''
          <body>
          <div id='Cabecera' align=center>
          <h1>ACTUALIZAR DATOS</h1>
              <div id='GBotones' align=center>
                  <form name="formulario" method="get" action="actualizaDatos1">
-                 <input type="file" name="name" accept=".xls,.xlsx" id="a1">
-                 <input type="submit" id="b1" \>
+                 <input type="file" name="name" accept=".xls,.xlsx" id="a2">
+                 <input type="submit" id="b2" \>
                  </form>
             </div>
             <div>
@@ -337,69 +109,8 @@ class dataWarehouse:
    
    def lecturaDatos(self,name=None):
        #salida
-       output='''
-               <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                         margin-top: 15%;
-                         margin-right: 25%;
-                         margin-bottom: 25%;
-                         margin-left: 25%;
-                         
-                             }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=file],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=file],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b1{
-                    color: #ffffff;
-                    background-color: #8B3636;
-                } 
-                #a1{
-                    background-color: #EC9393;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>INTRODUCIR DATOS</h1>
@@ -531,75 +242,8 @@ class dataWarehouse:
    
    def actualizaDatos1(self,name=None):
        #salida
-       output='''
-               <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                         margin-top: 15%;
-                         margin-right: 25%;
-                         margin-bottom: 25%;
-                         margin-left: 25%;
-                         
-                             }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=file],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=file],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b1{
-                    color: #ffffff;
-                    background-color: #8B3636;
-                }
-                #b2{
-                    background-color: #764E1B;
-                }
-                #b21{
-                    background-color: #76421B;
-                }
-                #a1{
-                    background-color: #EC9393;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>ACTUALIZAR DATOS</h1>
@@ -683,72 +327,8 @@ class dataWarehouse:
 
    def actualizarDatos2(self):
        #salida
-       output='''
-               <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                         margin-top: 15%;
-                         margin-right: 25%;
-                         margin-bottom: 25%;
-                         margin-left: 25%;
-                         
-                             }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=file],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=file],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b1{
-                    color: #ffffff;
-                    background-color: #8B3636;
-                }
-                #b2{
-                    background-color: #764E1B;
-                }
-                #a1{
-                    background-color: #EC9393;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>ACTUALIZAR DATOS</h1>
@@ -960,85 +540,8 @@ class dataWarehouse:
        borrProf, newProf =f.comprobacion(self,dfxProf,yProf)
        borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras)
        
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 10%;
-                 margin-bottom: 25%;
-                 margin-left: 10%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        input[type=file],input[type=submit]{
-                text-decoration: none;
-                padding: 10px;
-                font-family:"Arial Narrow", sans-serif;
-                font-weight: 600;
-                font-size: 20px;
-                
-                border-radius: 10px;
-                border: 2px solid #000000;
-        }   
-        input[type=file],input[type=submit]:hover{
-            opacity:0.8;
-        }
-        
-        td {
-                font-size: 15px;
-                line-height: 20px;
-                padding: 0 20px;
-                text-align: justify;
-                vertical-align: top;
-                width: 50%;
-        }
-
-        td.first {
-                border-right: 2px solid #000000;
-                }
-        #b1{
-            color: #ffffff;
-            background-color: #8B3636;
-        }
-        #b2{
-            background-color: #764E1B;
-        }
-        #a1{
-            background-color: #EC9393;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
+       output=f.css(self)
+       output+='''       
          <body>
          <div id='Cabecera' align=center>
              <h1>TABLAS</h1>
@@ -1136,72 +639,8 @@ class dataWarehouse:
                                conn, params={"cg":np.int(cg), "anno":anno})
        tablaOld,tablaNew=f.comprobacion(self,tablaO,tablaN)
        
-       output='''
-       <html>
-        <head>
-         </head>
-         <style>
-         body {
-                 margin-top: 15%;
-                 margin-right: 5%;
-                 margin-bottom: 25%;
-                 margin-left: 5%;
-                 
-                     }
-        #Cabecera {
-                text-decoration: none;
-                padding: 15px 70px 50px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #000000;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-                 background-color:#D6D6D6;
-                }
-        #GBotones {
-            margin-top: 50px;
-            }
-         .boton{
-                 text-decoration: none;
-                 padding: 10px;
-                 font-family:"Arial Narrow", sans-serif;
-                 font-weight: 600;
-                 font-size: 20px;
-                 color: #ffffff;
-                 border-radius: 10px;
-                 border: 2px solid #000000;
-        }   
-        .boton:hover{
-            opacity:0.8;
-        }
-        input[type=file],input[type=submit]{
-                text-decoration: none;
-                padding: 10px;
-                font-family:"Arial Narrow", sans-serif;
-                font-weight: 600;
-                font-size: 20px;
-                
-                border-radius: 10px;
-                border: 2px solid #000000;
-        }   
-        input[type=file],input[type=submit]:hover{
-            opacity:0.8;
-        }
-        #b1{
-            color: #ffffff;
-            background-color: #8B3636;
-        }
-        #b2{
-            background-color: #764E1B;
-        }
-        #a1{
-            background-color: #EC9393;
-        }
-        #b4{
-            background-color: #454260;
-        }
-         </style>
+       output=f.css(self)
+       output+='''
          <body>
          <div id='Cabecera' align=center>
          <h1>TABLA</h1>
@@ -1222,72 +661,8 @@ class dataWarehouse:
    mostrarDatosNuevosv1.exposed = True   
    
    def visualizarBD(self):
-       output='''
-               <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 5%;
-                 margin-bottom: 25%;
-                 margin-left: 5%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=file],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=file],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b1{
-                    color: #ffffff;
-                    background-color: #8B3636;
-                }
-                #b2{
-                    background-color: #764E1B;
-                }
-                #a1{
-                    background-color: #EC9393;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>DATOS</h1>
@@ -1313,82 +688,8 @@ class dataWarehouse:
    visualizarBD.exposed = True
 
    def visualizarDatos(self):
-       
-       
-       
-       
-       output='''
-               <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b5{
-                    color: #ffffff;
-                    background-color: #71A449;
-                }
-                #b6{
-                    background-color: #49A457;
-                }
-                #b7{
-                    background-color: #49A479;
-                }
-                #b8{
-                    background-color: #49A49A;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR DATOS</h1>
@@ -1415,69 +716,8 @@ class dataWarehouse:
 
 
    def visualizarAsignaturasGrado(self):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b5{
-                    color: #ffffff;
-                    background-color: #71A449;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR ASIGNATURAS</h1>
@@ -1495,7 +735,7 @@ class dataWarehouse:
        output+='''
        <div id='GBotones' align=center>
                  <form name="formulario" method="get" action="visualizarAsignaturasGrado1">
-                 <input type="text" name="name" id="a1">
+                 <input type="text" name="name" id="a3">
                  <input type="submit" id="b5" \>
                  </form>
             </div>
@@ -1515,65 +755,8 @@ class dataWarehouse:
 
 
    def visualizarAsignaturasGrado1(self,name=None):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR ASIGNATURAS</h1>
@@ -1601,68 +784,8 @@ class dataWarehouse:
    
 
    def visualizarProfesoresAsignaturas(self):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b6{
-                    background-color: #49A457;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR PROFESORES POR ASIGNATURA</h1>
@@ -1680,7 +803,7 @@ class dataWarehouse:
        output+='''
        <div id='GBotones' align=center>
                  <form name="formulario" method="get" action="visualizarProfesoresAsignaturas1">
-                 <input type="text" name="name" id="a1">
+                 <input type="text" name="name" id="a3">
                  <input type="submit" id="b6" \>
                  </form>
             </div>
@@ -1700,65 +823,8 @@ class dataWarehouse:
 
 
    def visualizarProfesoresAsignaturas1(self,name=None):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR PROFESORES POR ASIGNATURA</h1>
@@ -1786,68 +852,8 @@ class dataWarehouse:
 
 
    def visualizarProfesoresGrupo(self):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b7{
-                    background-color: #49A479;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR PROFESORES POR GRUPO</h1>
@@ -1865,7 +871,7 @@ class dataWarehouse:
        output+='''
        <div id='GBotones' align=center>
                  <form name="formulario" method="get" action="visualizarProfesoresGrupo1">
-                 <input type="text" name="name" id="a1">
+                 <input type="text" name="name" id="a3">
                  <input type="submit" id="b7" \>
                  </form>
             </div>
@@ -1885,65 +891,8 @@ class dataWarehouse:
 
 
    def visualizarProfesoresGrupo1(self,name=None):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR PROFESORES POR GRUPO</h1>
@@ -1971,68 +920,8 @@ class dataWarehouse:
 
 
    def visualizarHorasProfesor(self):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #b8{
-                    background-color: #49A49A;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR HORAS PROFESOR</h1>
@@ -2050,7 +939,7 @@ class dataWarehouse:
        output+='''
        <div id='GBotones' align=center>
                  <form name="formulario" method="get" action="visualizarHorasProfesor1">
-                 <input type="text" name="name" id="a1">
+                 <input type="text" name="name" id="a3">
                  <input type="submit" id="b8" \>
                  </form>
             </div>
@@ -2070,65 +959,8 @@ class dataWarehouse:
 
 
    def visualizarHorasProfesor1(self,name=None):
-       output='''
-           <html>
-                <head>
-                 </head>
-                 <style>
-                 body {
-                 margin-top: 15%;
-                 margin-right: 25%;
-                 margin-bottom: 25%;
-                 margin-left: 25%;
-                 
-                     }
-                #Cabecera {
-                        text-decoration: none;
-                        padding: 15px 70px 50px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #000000;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                         background-color:#D6D6D6;
-                        }
-                #GBotones {
-                    margin-top: 50px;
-                    }
-                 .boton{
-                         text-decoration: none;
-                         padding: 10px;
-                         font-family:"Arial Narrow", sans-serif;
-                         font-weight: 600;
-                         font-size: 20px;
-                         color: #ffffff;
-                         border-radius: 10px;
-                         border: 2px solid #000000;
-                }   
-                .boton:hover{
-                    opacity:0.8;
-                }
-                input[type=text],input[type=submit]{
-                        text-decoration: none;
-                        padding: 10px;
-                        font-family:"Arial Narrow", sans-serif;
-                        font-weight: 600;
-                        font-size: 20px;
-                        
-                        border-radius: 10px;
-                        border: 2px solid #000000;
-                }   
-                input[type=text],input[type=submit]:hover{
-                    opacity:0.8;
-                }
-                #a1{
-                    background-color: #FFFFFF;
-                }
-                #b4{
-                    background-color: #454260;
-                }
-                 </style>
+       output=f.css(self)
+       output+='''
                  <body>
                  <div id='Cabecera' align=center>
                  <h1>VISUALIZAR HORAS PROFESOR</h1>
