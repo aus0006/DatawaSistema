@@ -10,13 +10,14 @@ import os.path
 import pandas as pd
 import numpy as np
 import func.functions as f
+import func.presentation as p
 import sqlalchemy
 from sqlalchemy.sql import text
 
 
 class dataWarehouse:
    def index(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
          <body>
          <div id='Cabecera' align=center>
@@ -40,7 +41,7 @@ class dataWarehouse:
    def borrarDatos(self):
        conn=f.conexionDB(self)
        conn.execute("call generarTablas02()")
-       output=f.css(self)
+       output=p.css(self)
        output+='''
          <body>
          <div id='Cabecera' align=center>
@@ -57,7 +58,7 @@ class dataWarehouse:
    borrarDatos.exposed = True
        
    def entradaDatos(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
          <body>
          <div id='Cabecera' align=center>
@@ -82,7 +83,7 @@ class dataWarehouse:
    entradaDatos.exposed = True 
    
    def actualizarDatos(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
          <body>
          <div id='Cabecera' align=center>
@@ -109,7 +110,7 @@ class dataWarehouse:
    
    def lecturaDatos(self,name=None):
        #salida
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -121,73 +122,90 @@ class dataWarehouse:
            if os.path.exists(name):
                #LEER DATOS DE EXCEL
                f.leerExcel(self,name)
-               tabla=f.formateoDatos(self)
+               tablaN=f.formateoDatos(self)
                #tablahtml=tabla.to_html()
                #GUARDAR DATOS EN BD
                conn=f.conexionDB(self)
                #CREAR DATAFRAMES POR TABLA PARA SUBIR
-               dfgrado=tabla[['CG','Grado']]
-               dfgrado=dfgrado.drop_duplicates(subset='CG')
+               #LEER DATOS DE BD
+               tablaO=pd.read_sql("select * from dataframeview", conn)
                
-               dfasignaturas=tabla[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
-               dfasignaturas= dfasignaturas.drop_duplicates(subset='CA')
+               #tabla GRADOS               
+               dfxGrados=tablaO[['CG','Grado']]
+               dfxGrados=dfxGrados.drop_duplicates(subset=['CG','Grado'])
+               yGrados=tablaN[['CG','Grado']]
+               yGrados=yGrados.drop_duplicates(subset=['CG','Grado'])
+               #tabla Horas
+               dfxHoras=tablaO[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+               dfxHoras=dfxHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+               yHoras=tablaN[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
+               yHoras=yHoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
                
-               dfgrupo=tabla[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
-               dfgrupo=dfgrupo.drop_duplicates(subset=['Grupo','CA'])
+               #tabla PROFESORES
+               dfxProf=tablaO[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+               dfxProf=dfxProf.drop_duplicates(subset='CProf')
+               yProf=tablaN[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
+               yProf=yProf.drop_duplicates(subset='CProf')
                
-               dfprofesor=tabla[['CProf','Profesor','Iprof','Actas','CDS','Docencia','Resp','OfertaConjunta']]
-               dfprofesor=dfprofesor.drop_duplicates(subset='CProf')
+               #tabla GRUPOS
+               dfxGrup=tablaO[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+               dfxGrup=dfxGrup.drop_duplicates(subset=['Grupo','CA'])
+               yGrup=tablaN[['Grupo', 'Igrup', 'Macrogrupo', 'HDocTipGr', 'TipDoc','CA']]
+               yGrup=yGrup.drop_duplicates(subset=['Grupo','CA'])
                
-               dflistado=tabla[['Anno','Fecha', 'CG']]
-               dflistado=dflistado.drop_duplicates(subset='Anno')
+               #tabla ASIGNATURAS
+               dfxAsig=tablaO[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+               dfxAsig=dfxAsig.drop_duplicates(subset='CA')
+               yAsig=tablaN[['CA','Asignatura', 'Curso', 'TpVp', 'HDocAsig','CG']]
+               yAsig=yAsig.drop_duplicates(subset='CA')
                
-               dfhoras=tabla[['CG','Grupo','CProf','CA','Anno','HProfGrup']]
-               dfhoras=dfhoras.drop_duplicates(subset=['CG','Grupo','CProf','CA','Anno'])
+               #tabla LISTADOS
+               dfxListado=tablaO[['Anno','Fecha', 'CG']]
+               dfxListado=dfxListado.drop_duplicates(subset='Anno')
+               yListado=tablaN[['Anno','Fecha', 'CG']]
+               yListado=yListado.drop_duplicates(subset='Anno')
+               
+               #COMPROBACION DE DATOS
+               borrGrados, newGrados=f.comprobacion(self,dfxGrados,yGrados)
+               borrListado, newListado=f.comprobacion(self,dfxListado,yListado)
+               borrAsig, newAsig=f.comprobacion(self,dfxAsig,yAsig)
+               borrGrup, newGrup=f.comprobacion(self,dfxGrup,yGrup)
+               borrProf, newProf =f.comprobacion(self,dfxProf,yProf)
+               borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras)
                
                subida=True
                
                try:
-                   dfgrado.to_sql(con=conn, name='grados', if_exists='append',index=False)
+                   newGrados.to_sql(con=conn, name='grados', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: El grado no se ha introducido.</p>
-                   '''               
+                   output+=p.errorIntro(self,'grado')               
                try:
-                   dfasignaturas.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
+                   newAsig.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: las asignaturas no se han introducido.</p>
-                   '''               
+                   output+=p.errorIntro(self,'asignaturas')               
                try:
-                   dflistado.to_sql(con=conn, name='listados', if_exists='append',index=False)
+                   newListado.to_sql(con=conn, name='listados', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: Los listados no se han introducido.</p>
-                   '''               
+                   output+=p.errorIntro(self,'listados')               
                try:
-                   dfgrupo.to_sql(con=conn, name='grupos', if_exists='append',index=False)
+                   newGrup.to_sql(con=conn, name='grupos', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: Los grupos no se han introducido.</p>
-                   '''               
+                   output+=p.errorIntro(self,'grupos')              
                try:
-                   dfprofesor.to_sql(con=conn, name='profesores', if_exists='append',index=False)
+                   newProf.to_sql(con=conn, name='profesores', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: Los profesores no se han introducido.</p>
-                   '''                 
+                   output+=p.errorIntro(self,'profesores')                 
                try:
-                   dfhoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
+                   newHoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
                except:
                    subida=False
-                   output+='''
-                       <p>ERROR: Las horas no se han introducido.</p>
-                   '''               
+                   output+=p.errorIntro(self,'horas') 
+            
                #BORRAR ARCHIVO TEMPORAL
                if os.path.isfile("tmp/out.csv"):
                    os.remove("tmp/out.csv")
@@ -242,7 +260,7 @@ class dataWarehouse:
    
    def actualizaDatos1(self,name=None):
        #salida
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -327,7 +345,7 @@ class dataWarehouse:
 
    def actualizarDatos2(self):
        #salida
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -393,76 +411,57 @@ class dataWarehouse:
            try:
                conn.execute(s, cg=v[0], g=v[1], cp=v[2], ca=v[3], a=v[4])
            except:
-               output+='''
-               <p>ERROR: Los datos de horas no se han borrado.</p>
-               '''  
+               output+=p.errorBorrado(self,'horas')  
        #profesores
        for v in borrProf.values:
            s = text("DELETE FROM profesores WHERE CProf= :cp")
            try:
                conn.execute(s, cp=v[0])
            except:
-               output+='''
-               <p>ERROR: Los datos de profesores no se han borrado.</p>
-               ''' 
+               output+=p.errorBorrado(self,'profesores')   
        #grupos
        for v in borrGrup.values:
            s = text("DELETE FROM grupos WHERE Grupo = :g AND CA = :ca")
            try:
                conn.execute(s, g=v[0], ca=v[5])
            except:
-               output+='''
-               <p>ERROR: Los datos de grupos no se han borrado.</p>
-               ''' 
+               output+=p.errorBorrado(self,'grupos')   
        #asignaturas
        for v in borrAsig.values:
            s = text("DELETE FROM asignaturas WHERE CA = :ca")
            try:
                conn.execute(s, ca=v[0])
            except:
-               output+='''
-               <p>ERROR: Los datos de asignaturas no se han borrado.</p>
-               '''
+               output+=p.errorBorrado(self,'asignaturas')  
        #listados
        for v in borrListado.values:
            s = text("DELETE FROM listados WHERE Anno = :a")
            try:
                conn.execute(s, a=v[0])
            except:
-               output+='''
-               <p>ERROR: Los datos de listados no se han borrado.</p>
-               '''
+               output+=p.errorBorrado(self,'listados') 
+               
        #INSERCION DE DATOS
        try:
            newAsig.to_sql(con=conn, name='asignaturas', if_exists='append',index=False)
        except:
-           output+='''
-                       <p>ERROR: Las nuevas asignaturas no se han introducido.</p>
-                   '''
+           output+=p.errorAct(self,'asignaturas')  
        try:
            newGrup.to_sql(con=conn, name='grupos', if_exists='append',index=False)
        except:
-           output+='''
-                       <p>ERROR: Los nuevos grupos no se han introducido.</p>
-                   '''
+           output+=p.errorAct(self,'grupos')
        try:
            newProf.to_sql(con=conn, name='profesores', if_exists='append',index=False)
        except:
-           output+='''
-                       <p>ERROR: Los nuevos profesores no se han introducido.</p>
-                   '''
+           output+=p.errorAct(self,'profesores')
        try:
            newListado.to_sql(con=conn, name='listados', if_exists='append',index=False)
        except:
-           output+='''
-                       <p>ERROR: Los nuevos listados no se han introducido.</p>
-                   '''
+           output+=p.errorAct(self,'listados')
        try:
            newHoras.to_sql(con=conn, name='horasasignadas', if_exists='append',index=False)
        except:
-           output+='''
-                       <p>ERROR: Las nuevas horas no se han introducido.</p>
-                   '''
+           output+=p.errorAct(self,'horas')
         
        #BORRAR ARCHIVO TEMPORAL
        if os.path.isfile("tmp/out.csv"):
@@ -540,7 +539,7 @@ class dataWarehouse:
        borrProf, newProf =f.comprobacion(self,dfxProf,yProf)
        borrHoras, newHoras=f.comprobacion(self,dfxHoras,yHoras)
        
-       output=f.css(self)
+       output=p.css(self)
        output+='''       
          <body>
          <div id='Cabecera' align=center>
@@ -639,7 +638,7 @@ class dataWarehouse:
                                conn, params={"cg":np.int(cg), "anno":anno})
        tablaOld,tablaNew=f.comprobacion(self,tablaO,tablaN)
        
-       output=f.css(self)
+       output=p.css(self)
        output+='''
          <body>
          <div id='Cabecera' align=center>
@@ -661,7 +660,7 @@ class dataWarehouse:
    mostrarDatosNuevosv1.exposed = True   
    
    def visualizarBD(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -688,7 +687,7 @@ class dataWarehouse:
    visualizarBD.exposed = True
 
    def visualizarDatos(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -716,7 +715,7 @@ class dataWarehouse:
 
 
    def visualizarAsignaturasGrado(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -755,7 +754,7 @@ class dataWarehouse:
 
 
    def visualizarAsignaturasGrado1(self,name=None):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -764,9 +763,12 @@ class dataWarehouse:
              '''
              
        conn=f.conexionDB(self)
-       df=pd.read_sql("select * from asignaturasorden where CG like  %(cg)s", 
+       try:
+           df=pd.read_sql("select * from asignaturasorden where CG like  %(cg)s", 
                                conn, params={"cg":np.int(name)})
-       output+=df.to_html()
+           output+=df.to_html()
+       except:
+           output+=''' ERROR cógigo de grado'''
        output+='''</p>'''
        output+='''
        <div id='GBotones' align=right>
@@ -784,7 +786,7 @@ class dataWarehouse:
    
 
    def visualizarProfesoresAsignaturas(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -823,7 +825,7 @@ class dataWarehouse:
 
 
    def visualizarProfesoresAsignaturas1(self,name=None):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -832,9 +834,12 @@ class dataWarehouse:
              '''
              
        conn=f.conexionDB(self)
-       df=pd.read_sql("select * from profesoresasignaturas where CG like  %(cg)s", 
+       try:
+           df=pd.read_sql("select * from profesoresasignaturas where CG like  %(cg)s", 
                                conn, params={"cg":np.int(name)})
-       output+=df.to_html()
+           output+=df.to_html()
+       except:
+           output+=''' ERROR cógigo de grado'''
        output+='''</p>'''
        output+='''
        <div id='GBotones' align=right>
@@ -852,7 +857,7 @@ class dataWarehouse:
 
 
    def visualizarProfesoresGrupo(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -891,7 +896,7 @@ class dataWarehouse:
 
 
    def visualizarProfesoresGrupo1(self,name=None):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -900,9 +905,12 @@ class dataWarehouse:
              '''
              
        conn=f.conexionDB(self)
-       df=pd.read_sql("select * from profesoresasignaturasgrupos where CG like  %(cg)s", 
+       try:
+           df=pd.read_sql("select * from profesoresasignaturasgrupos where CG like  %(cg)s", 
                                conn, params={"cg":np.int(name)})
-       output+=df.to_html()
+           output+=df.to_html()
+       except:
+           output+=''' ERROR cógigo de grado'''
        output+='''</p>'''
        output+='''
        <div id='GBotones' align=right>
@@ -920,7 +928,7 @@ class dataWarehouse:
 
 
    def visualizarHorasProfesor(self):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -959,7 +967,7 @@ class dataWarehouse:
 
 
    def visualizarHorasProfesor1(self,name=None):
-       output=f.css(self)
+       output=p.css(self)
        output+='''
                  <body>
                  <div id='Cabecera' align=center>
@@ -968,9 +976,12 @@ class dataWarehouse:
              '''
              
        conn=f.conexionDB(self)
-       df=pd.read_sql("select * from horasprofesorv2 where CG like  %(cg)s", 
+       try:
+           df=pd.read_sql("select * from horasprofesorv2 where CG like  %(cg)s", 
                                conn, params={"cg":np.int(name)})
-       output+=df.to_html()
+           output+=df.to_html()
+       except:
+           output+=''' ERROR cógigo de grado'''
        output+='''</p>'''
        output+='''
        <div id='GBotones' align=right>
